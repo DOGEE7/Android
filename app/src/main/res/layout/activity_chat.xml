@@ -24,15 +24,18 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:background="@mipmap/vimg" />
+            android:background="@mipmap/vimg_after" />
 
         <EditText
             android:id="@+id/input_text"
+            style="@android:style/Widget.Holo.EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:hint="Tell somthing to Dingdang"
-            android:maxLines="2" />
+            android:maxLines="2"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="15dp" />
 
         <Button
             android:id="@+id/send"

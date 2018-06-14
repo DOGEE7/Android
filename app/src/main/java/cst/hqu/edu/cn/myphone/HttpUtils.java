@@ -63,6 +63,7 @@ public class HttpUtils {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseData=response.body().string();
+
                 Log.i("OnResponse:",responseData);
                 final Bundle bundle=new Bundle();
                 bundle.putString("response",responseData);//bundle类中加入数据，在另一个activity中利用key取用数据

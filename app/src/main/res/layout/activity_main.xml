@@ -19,12 +19,23 @@
 
     <Button
         android:id="@+id/enterChat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="106dp"
+        android:layout_height="39dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="#AEE1E8"
-        android:text="进入叮当聊天" />
+        android:text="Chat"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/aboutChat"
+        android:layout_width="106dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/holo_blue_light"
+        android:text="About Me"
+        android:textAllCaps="false" />
 
 
 </LinearLayout>

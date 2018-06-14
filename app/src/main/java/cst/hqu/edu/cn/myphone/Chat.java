@@ -1,35 +1,42 @@
 package cst.hqu.edu.cn.myphone;
 
+
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.iflytek.cloud.RecognizerResult;
+import com.iflytek.cloud.SpeechConstant;
+import com.iflytek.cloud.SpeechError;
+import com.iflytek.cloud.SpeechRecognizer;
+import com.iflytek.cloud.SpeechUtility;
+import com.iflytek.cloud.ui.RecognizerDialog;
+import com.iflytek.cloud.ui.RecognizerDialogListener;
+
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 
 public class Chat extends AppCompatActivity {
     private EditText inputText;
     private Button send;
+    private Button voice;
     private RecyclerView msgRecyclerView;
 
     private List<Msg> msgList = new ArrayList<>();
     private MsgAdapter adapter;
+
+    private String speechResult;
 
     /*private String[] keys;
     private String[] values;
@@ -50,6 +57,7 @@ public class Chat extends AppCompatActivity {
         adapter = new MsgAdapter( msgList);
         msgRecyclerView.setAdapter(adapter);
         initMsgs();
+        /*智能聊天*/
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +84,68 @@ public class Chat extends AppCompatActivity {
                 }
             }
         });
+
+        /*语音识别*/
+        //语音配置对象初始化
+        SpeechUtility.createUtility(this, SpeechConstant.APPID +"=5b1a871a");
+        voice=(Button)findViewById(R.id.voice);
+        voice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // voice.setBackgroundResource(R.mipmap.vimg_after);
+                switch (v.getId()){
+                    case R.id.voice:
+                        speechResult="[";
+//                      1.创建SpeechRecognizer对象，第2个参数：本地听写时传InitListener
+                        SpeechRecognizer mIat=SpeechRecognizer.createRecognizer(Chat.this,null);
+//                      2.交互动画
+                        RecognizerDialog iatDialog=new RecognizerDialog(Chat.this,null);
+//                      3.设置听写参数
+                        mIat.setParameter(SpeechConstant.DOMAIN,"iat");
+                        mIat.setParameter(SpeechConstant.LANGUAGE,"zh_cn");
+                        mIat.setParameter(SpeechConstant.ACCENT,"mandrin");
+
+                        iatDialog.setListener(new RecognizerDialogListener() {
+                            @Override
+                            public void onResult(RecognizerResult recognizerResult, boolean isLs) {
+                                if (!isLs){
+                                    speechResult+=recognizerResult.getResultString()+",";
+                                }else {
+                                    speechResult+=recognizerResult.getResultString()+"]";
+                                }
+                                if (isLs){
+//                                    解析Json列表字符串
+                                    Gson gson=new Gson();
+                                    List<SpeechUtility>speechUtilityList=gson.fromJson(speechResult,new TypeToken<List<SpeechUtility>>(){}.getType());
+                                    String finalResult="";
+                                    for (int i=0;i<speechUtilityList.size();i++){
+                                        finalResult+=speechUtilityList.get(i).toString();
+                                    }
+                                    inputText.setText(finalResult);
+                                    inputText.requestFocus();
+                                    inputText.setSelection(finalResult.length());
+                                    Log.i("Result：",finalResult);
+
+                                }
+                            }
+
+                            @Override
+                            public void onError(SpeechError speechError) {
+                                speechError.getPlainDescription(true);
+
+                            }
+                        });
+                        //开始听写
+                        iatDialog.show();
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        });
+
+
     }
     private Handler handler=new Handler(){
         @Override
@@ -102,4 +172,7 @@ public class Chat extends AppCompatActivity {
         Msg msg3 = new Msg("I am Dingdang! Nice talking to you.", Msg.TYPE_RECEIVED);
         msgList.add(msg3);
     }
+
+
+
 }
