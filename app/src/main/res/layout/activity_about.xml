@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="name:DingDang
-                     author:Yami
+                     author:Yanir
                      version:1.0
-                     use:chat/check"
+                     use:chat"
         android:textAlignment="viewStart"
         android:textSize="20dp" />
 </LinearLayout>
